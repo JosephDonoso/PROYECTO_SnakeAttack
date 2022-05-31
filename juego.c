@@ -356,7 +356,6 @@ void inicializarPowerUps( List* powerUps ){
 }
 
 void inicializarMisiles(Game* juego){
-    free(juego->misiles);
     juego->misiles = createList();
 }
 
