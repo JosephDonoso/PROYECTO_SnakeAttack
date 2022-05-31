@@ -27,6 +27,7 @@ struct Muro{ //Se dividen para facilitar la validación cundo el jugador colisio
 struct Boost{ 
     bool activo;
     Pixel* pixel;
+    Player* refer;
 };
 
 struct Misil{
@@ -92,6 +93,7 @@ Boost* createBoost(){ //Crea y reserva memoria para un nuevo boost
     nuevoBoost->pixel = (Pixel*) malloc( sizeof(Pixel) );
     nuevoBoost->pixel->pos.X = -1;
     nuevoBoost->pixel->pos.Y = -1;
+    nuevoBoost->refer = NULL;
     return nuevoBoost;
 }
 
@@ -341,6 +343,7 @@ void borrarPowerUp(Boost* powerUp){
     }
     powerUp->pixel->pos.X = -1;
     powerUp->pixel->pos.Y = -1;
+    powerUp->refer = NULL;
 }
 
 //Borra e inicializa en falso todos los powerups
@@ -615,16 +618,15 @@ void activarBoost(Game* juego, Boost* boost, float* delayBoost, int* scoreBoost)
 
 //Función del appendBoost que agrega un nuevo segmento a la serpiente
 //A MEJORAR PARA QUE EL APPEND SEA DEPENDIENTE AL JUGADOR QUE LO COLISIONA
-void agregarCola( Game* juego ){
-    if(juego->P1->largoSnake < 5){ //Máximo de 5 segmentos
+void agregarCola( Player* player ){
+    if(player->largoSnake < 5){ //Máximo de 5 segmentos
         Pixel* colaNueva = (Pixel*) malloc( sizeof(Pixel) );
         colaNueva->pos.X = -1;
         colaNueva->pos.Y = -1;
         colaNueva->value = "O";
-        pushBack( juego->P1->snake , colaNueva);
-        juego->P1->largoSnake += 1;
+        pushBack( player->snake , colaNueva);
+        player->largoSnake += 1;
     }
-    
 }
 
 //Imprime el nivel actual en el que sencuentra el jugador
@@ -635,11 +637,22 @@ void printNivel( List* muroDown, int nivel){
 }
 
 //Imprime informaciones generales del juego actual
-void printInfo( int score, int lives, int time, List* muroDown){
-    Pixel* bordeInf = (Pixel*) firstList(muroDown);
+void printBoost(Boost* boost){
+    if(boost->activo){
+        if((char*)boost->pixel->value == (char*) 4) printf("SCOREBOOST");
+        if((char*)boost->pixel->value == (char*) 21) printf("REVERSEBOOST");
+        if((char*)boost->pixel->value == (char*) 17) printf("SLOWBOOST");
+        if((char*)boost->pixel->value == (char*) 16) printf("FASTBOOST");
+    }
+    else printf("             ");
+}
+
+void printInfo(Game* juego, Boost* boost , int score, int time){
+    Pixel* bordeInf = (Pixel*) firstList(juego->wallStatic->muroDown);
     gotoxy(5,bordeInf->pos.Y + 2);
     time = (int) time/100;
-    printf("SCORE: %5i         VIDAS:%2i       TIME: %4i", score, lives, time);
+    printf("SCORE: %5i         VIDAS:%2i       TIME: %4i         ", score, juego->P1->lives, time);
+    printBoost( boost );
 }
 
 void juego(int numJugador , int modo ){
@@ -652,7 +665,7 @@ void juego(int numJugador , int modo ){
     float delayBoost = 1;
     int scoreBoost = 1;
     int time = 0;
-    long long score = 4000;
+    long long score = 0;
     int limiteBoost;
     while (juego[nivel]->P1->lives > 0 && nivel < 5){
         system("cls");
@@ -662,7 +675,8 @@ void juego(int numJugador , int modo ){
         limiteBoost = -1;
 
         while(true){
-            Pixel* head = (Pixel*) firstList(juego[nivel]->P1->snake);
+            Pixel* P1 = (Pixel*) firstList(juego[nivel]->P1->snake);
+            if(false){ Pixel* P2 = (Pixel*) firstList(juego[nivel]->P1->snake);}
             time += (int) (10 * delayBoost);
             score += 2 * scoreBoost;
             Sleep( (int) (DELAY * delayBoost) );
@@ -672,14 +686,34 @@ void juego(int numJugador , int modo ){
             if(juego[nivel]->P1->opcionMover != -1){
                 if((int)(time/10) % 300 == 0){
                     if(time == 3000){
-                        srand(head->pos.X * head->pos.Y);
+                        srand(P1->pos.X * P1->pos.Y);
                     }
                     boostActual = ubicarBoostRand(juego[nivel]);
                     limiteBoost = time+1000;
                 }
-                if(head->pos.X == boostActual->pixel->pos.X && head->pos.Y == boostActual->pixel->pos.Y){
+
+                if(P1->pos.X == boostActual->pixel->pos.X && P1->pos.Y == boostActual->pixel->pos.Y){
                     boostActual->activo = true;
+                    boostActual->refer = juego[nivel]->P1;
                     limiteBoost = time+1900;
+                }
+
+                if( boostActual->activo ){
+                    if( (char*)boostActual->pixel->value == (char*) 3 ){// Otra vida
+                        boostActual->refer->lives += 1; //Depende del jugador
+                        limiteBoost = time;
+                    }
+                    else if((char*)boostActual->pixel->value == (char*) 1){// Otra cola
+                        agregarCola(boostActual->refer); //Depende del jugador
+                        limiteBoost = time; 
+                    }
+                    else if((char*)boostActual->pixel->value == (char*) 15){// Otro color
+                        colorRandom();
+                        limiteBoost = time;
+                    }
+                    else{
+                        activarBoost(juego[nivel], boostActual, &delayBoost, &scoreBoost);
+                    }
                 }
 
                 if(time == limiteBoost){
@@ -690,28 +724,7 @@ void juego(int numJugador , int modo ){
                         boostActual->activo = false;
                         boostActual->pixel->pos.X = -1;
                         boostActual->pixel->pos.Y = -1;
-                    }
-                }
-                if( boostActual->activo ){
-                    if( (char*)boostActual->pixel->value == (char*) 3 ){
-                        juego[nivel]->P1->lives += 1;
-                        limiteBoost = time + 10;
-                    }
-                    else if((char*)boostActual->pixel->value == (char*) 1){
-                        agregarCola(juego[nivel]);
-                        limiteBoost = time + 10;
-                    }
-                    else if((char*)boostActual->pixel->value == (char*) 15){
-                        if(time == limiteBoost-10){
-                            system("color 0d");
-                        }
-                        else if(time % 200 == 0){
-                            colorRandom();
-                        }
-                        
-                    }
-                    else{
-                        activarBoost(juego[nivel], boostActual, &delayBoost, &scoreBoost);
+                        boostActual->refer = NULL;
                     }
                 }
 
@@ -731,7 +744,7 @@ void juego(int numJugador , int modo ){
 
             if(juego[nivel]->P1->choco){
                 juego[nivel]->P1->lives -= 1;
-                printInfo(score, juego[nivel]->P1->lives, time, juego[nivel]->wallStatic->muroDown);
+                printInfo(juego[nivel], boostActual, score, time );
                 break;
             }
             if(score >= 2000 * pow(2, nivel)){
@@ -741,7 +754,7 @@ void juego(int numJugador , int modo ){
                 break;
             }
             
-            printInfo(score, juego[nivel]->P1->lives, time, juego[nivel]->wallStatic->muroDown);
+            printInfo(juego[nivel], boostActual, score, time );
         }
 
     }

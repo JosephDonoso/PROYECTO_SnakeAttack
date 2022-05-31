@@ -69,34 +69,46 @@ void colorRandom(){
     switch (opcion)
     {
     case 0:
-        system("color 1f");
+        system("color 01");
         break;
     case 1:
-        system("color a0");
+        system("color 02");
         break;
     case 2:
-        system("color 25");
+        system("color 03");
         break;
     case 3:
-        system("color d1");
+        system("color 04");
         break;
     case 4:
-        system("color 7c");
+        system("color 05");
         break;
     case 5:
-        system("color 5e");
+        system("color 06");
         break;
     case 6:
-        system("color 30");
-        break;
-    case 7:
-        system("color 42");
-        break;
-    case 8:
         system("color 07");
         break;
+    case 7:
+        system("color 08");
+        break;
+    case 8:
+        system("color 09");
+        break;
     case 9:
-        system("color b6");
+        system("color 0A");
+        break;
+    case 10:
+        system("color 0B");
+        break;
+    case 11:
+        system("color 0C");
+        break;
+    case 12:
+        system("color 0E");
+        break;
+    case 13:
+        system("color 0F");
         break;
     }
     /*
