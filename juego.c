@@ -38,7 +38,6 @@ struct Misil{
 };
 
 struct Player{
-    char nombre[51];
     List* snake;
     short largoSnake;
     short opcionMover;
@@ -148,7 +147,7 @@ Misil* createMisil( Game* juego ){
 }
 
 //Importa desde un csv de propiedades las características del juego
-void importarGame( Game** juego ){
+void importarGame( Game** juego, int numJugadores ){
     FILE* fp = NULL;
     fp = fopen ( "PropiedadesJuego.csv", "r");
     if(!fp){
@@ -169,10 +168,15 @@ void importarGame( Game** juego ){
         aux = (char *) get_csv_field(linea, 1);
         if( strcmp( aux, "player") == 0 ){ //Si el elemento es player obtiene las caracteristicas
             Pixel* nuevoPixel = (Pixel*) malloc( sizeof(Pixel) );
-            aux = (char *) get_csv_field(linea, 2);
-            nuevoPixel->value = aux;
+            nuevoPixel->value = (char *) 79;
             pushFront( juego[nivel]->P1->snake, nuevoPixel ); //Lo agrega en la lista de "player del juego actual"
             juego[nivel]->P1->largoSnake += 1;
+            if(numJugadores == 2){
+                Pixel* nuevoPixel = (Pixel*) malloc( sizeof(Pixel) );
+                nuevoPixel->value = (char*) 157;
+                pushFront( juego[nivel]->P2->snake, nuevoPixel ); //Lo agrega en la lista de "player del juego actual"
+                juego[nivel]->P2->largoSnake += 1;
+            }
         }
         else if( strcmp( aux, "muroUp") == 0 ){//Si el elemento es muroUp obtiene los rangos para crearse
             aux = (char *) get_csv_field(linea, 2);
@@ -293,26 +297,58 @@ void importarGame( Game** juego ){
 }
 
 //Ubica al jugador en medio del nivel
-void inicializarJugador( Game* juego){
-    juego->P1->opcionMover = -1;
-    juego->P1->choco = false;
-
+void inicializarJugador( Game* juego, int numJugadores){
     Pixel* bordeSupDerecho = (Pixel*) lastList(juego->wallStatic->muroUp);
     Pixel* bordeInfIzquierdo = (Pixel*) firstList(juego->wallStatic->muroDown);
+    Pixel* jugador;
+    int i;
     int mitadX = (int) ((bordeSupDerecho->pos.X - bordeInfIzquierdo->pos.X)/2) + bordeInfIzquierdo->pos.X ;
     mitadX += mitadX % 2;
     int mitadY = (int) ((bordeInfIzquierdo->pos.Y - bordeSupDerecho->pos.Y)/2) + bordeSupDerecho->pos.Y;
     mitadY -= 2;
-    Pixel* jugador = (Pixel*) firstList( juego->P1->snake );
-    int i = 0;
-    while( jugador ){
-        jugador->pos.X = mitadX;
-        jugador->pos.Y = mitadY + i;
-        gotoxy( jugador->pos.X, jugador->pos.Y );
-        printf("%s", jugador->value);
-        jugador = (Pixel*) nextList( juego->P1->snake );
-        i += 1;
+
+    if(numJugadores == 2){
+        jugador = (Pixel*) firstList( juego->P1->snake );
+        i = 0;
+        while( jugador ){
+            jugador->pos.X = mitadX - 6;
+            jugador->pos.Y = mitadY + i;
+            gotoxy( jugador->pos.X, jugador->pos.Y );
+            printf("%c", jugador->value);
+            jugador = (Pixel*) nextList( juego->P1->snake );
+            i += 1;
+        }
+        juego->P1->opcionMover = -1;
+        juego->P1->choco = false;
+
+        jugador = (Pixel*) firstList( juego->P2->snake );
+        i = 0;
+        while( jugador ){
+            jugador->pos.X = mitadX + 6;
+            jugador->pos.Y = mitadY + i;
+            gotoxy( jugador->pos.X, jugador->pos.Y );
+            printf("%c", jugador->value);
+            jugador = (Pixel*) nextList( juego->P2->snake );
+            i += 1;
+        }
+        juego->P2->opcionMover = -1;
+        juego->P2->choco = false;
     }
+    else{
+        jugador = (Pixel*) firstList( juego->P1->snake );
+        i = 0;
+        while( jugador ){
+            jugador->pos.X = mitadX;
+            jugador->pos.Y = mitadY + i;
+            gotoxy( jugador->pos.X, jugador->pos.Y );
+            printf("%c", jugador->value);
+            jugador = (Pixel*) nextList( juego->P1->snake );
+            i += 1;
+        }
+        juego->P1->opcionMover = -1;
+        juego->P1->choco = false;
+    }
+
 }
 
 //Recorre todo el muro y lo imprime
@@ -360,22 +396,11 @@ void inicializarMisiles(Game* juego){
 }
 
 //Inicializa un nuevo nivel en caso de pasar al siguiente o perder una vida
-void inicializarNivel( Game* juego ){
-    inicializarJugador( juego );
+void inicializarNivel( Game* juego, int numJugadores ){
+    inicializarJugador( juego, numJugadores );
     inicializarBordes( juego->wallStatic );
     inicializarPowerUps( juego->powerUps );
     inicializarMisiles( juego );
-}
-
-//Borra al jugador de la pantalla
-void borrarJugador(List* player){
-    Pixel* jugador = (Pixel*) firstList( player );
-    while(jugador){
-        
-        gotoxy( jugador->pos.X, jugador->pos.Y );
-        printf("%s", VACIO);
-        jugador = (Pixel*) nextList( player );
-    }
 }
 
 //Dibua al jugador en la pantalla
@@ -383,7 +408,7 @@ void printJugador(List* player){
     Pixel* jugador = (Pixel*) firstList( player );
     while( jugador ){
         gotoxy( jugador->pos.X, jugador->pos.Y );
-        printf("%s", jugador->value);
+        printf("%c", jugador->value);
         jugador =  (Pixel*) nextList( player );
     }
 }
@@ -421,7 +446,6 @@ bool moverUpPlayer( Game* juego ){
     int posConstante = ((Pixel*) lastList( juego->wallStatic->muroUp ))->pos.Y;
 
     if(jugadorCabeza->pos.Y - 1 == posConstante){//Si colisiona con el muro
-        borrarJugador(juego->P1->snake);
         return true;
     }
     
@@ -442,7 +466,6 @@ bool moverDownPlayer( Game* juego ){
     int posConstante = ((Pixel*) lastList( juego->wallStatic->muroDown ))->pos.Y;
 
     if(jugadorCabeza->pos.Y + 1 == posConstante){//Si colisiona con el muro
-        borrarJugador(juego->P1->snake);
         return true;
     }
 
@@ -464,7 +487,6 @@ bool moverRightPlayer( Game* juego ){
     int posConstante = ((Pixel*) lastList( juego->wallStatic->muroRight ))->pos.X;
 
     if(jugadorCabeza->pos.X + 2 >= posConstante){//Si colisiona con el muro
-        borrarJugador(juego->P1->snake);
         return true;
     }
 
@@ -487,7 +509,6 @@ bool moverLeftPlayer( Game* juego ){
 
 
     if(jugadorCabeza->pos.X - 2 <= posConstante){//Si colisiona con el muro
-        borrarJugador(juego->P1->snake);
         return true;
     }
 
@@ -654,11 +675,13 @@ void printInfo(Game* juego, Boost* boost , int score, int time){
     printBoost( boost );
 }
 
-void juego(int numJugador , int modo ){
+void juego(int numJugadores , int modo){
+    printf("%c", 157);
+    system("pause");
     ocultarCursor();
     Game** juego = createGame();
     Boost* boostActual = createBoost();
-    importarGame( juego );
+    importarGame( juego, numJugadores );
 
     short nivel = 0;
     float delayBoost = 1;
@@ -669,13 +692,13 @@ void juego(int numJugador , int modo ){
     while (juego[nivel]->P1->lives > 0 && nivel < 5){
         system("cls");
         system("color 0d");
-        inicializarNivel( juego[nivel] );
+        inicializarNivel( juego[nivel], numJugadores );
         printNivel(juego[nivel]->wallStatic->muroDown, nivel+1);
         limiteBoost = -1;
 
         while(true){
             Pixel* P1 = (Pixel*) firstList(juego[nivel]->P1->snake);
-            if(false){ Pixel* P2 = (Pixel*) firstList(juego[nivel]->P1->snake);}
+            Pixel* P2 = (Pixel*) firstList(juego[nivel]->P2->snake);
             time += (int) (10 * delayBoost);
             score += 2 * scoreBoost;
             Sleep( (int) (DELAY * delayBoost) );
@@ -690,13 +713,18 @@ void juego(int numJugador , int modo ){
                     boostActual = ubicarBoostRand(juego[nivel]);
                     limiteBoost = time+1000;
                 }
-
                 if(P1->pos.X == boostActual->pixel->pos.X && P1->pos.Y == boostActual->pixel->pos.Y){
                     boostActual->activo = true;
                     boostActual->refer = juego[nivel]->P1;
                     limiteBoost = time+1900;
                 }
-
+                if(numJugadores == 2){
+                    if(P2->pos.X == boostActual->pixel->pos.X && P2->pos.Y == boostActual->pixel->pos.Y){
+                        boostActual->activo = true;
+                        boostActual->refer = juego[nivel]->P2;
+                        limiteBoost = time+1900;
+                    }
+                }
                 if( boostActual->activo ){
                     if( (char*)boostActual->pixel->value == (char*) 3 ){// Otra vida
                         boostActual->refer->lives += 1; //Depende del jugador
@@ -747,7 +775,6 @@ void juego(int numJugador , int modo ){
                 break;
             }
             if(score >= 2000 * pow(2, nivel)){
-                borrarJugador(juego[nivel]->P1->snake);
                 borrarPowerUp(boostActual);
                 nivel += 1;
                 break;
@@ -770,6 +797,5 @@ void juego(int numJugador , int modo ){
 
 
 //DEFINITIVAMENTE ELIMINAR EL PAUSE, SOLO OCUPARLO PARA EFECTOS PRÁCTICOS
-
-//TERMINAR DE CAMBIAR TODAS LAS VARIABLES PARA QUE QUEDEN BIEN LOS STRUCTS
+//AGREGAR AL SEGUNDO JUGADOR Y NOMBRES A AMBOS 
 //CAMBIAR DIAGRAMA DE FLUJO PARA INGRESAR EL NOMBRE DEL USUARIO DEPENDIENDO DE LA SERPIENTE

@@ -10,6 +10,7 @@ int main(){
     int modoJuego;
     while(true){
         if(menu(&numeroJugadores, &modoJuego)) break;
+        numeroJugadores = 2;
         juego(numeroJugadores, modoJuego);
     }
     
