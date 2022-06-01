@@ -7,7 +7,7 @@
 #include "list.h"
 #include "menu.h"
 
-bool menu(int* numJugadores , int* modo ){
+bool menu(int* numJugadores , int* modo, char* nombreP1, char* nombreP2 ){
     numJugadores = NULL;
     modo = NULL;
     return false;

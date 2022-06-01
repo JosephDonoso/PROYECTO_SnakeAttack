@@ -18,7 +18,7 @@ typedef struct Player Player;
 typedef struct Game Game;
 //Tipo game, lista de jugador, de muros, de boost y caracteristicas del juego
 
-void juego(int , int );
+void juego(int , int, char *, char * );
 //Función que despliega el juego
 
 #endif /* Juego_h */
