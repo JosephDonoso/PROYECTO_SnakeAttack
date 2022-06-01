@@ -764,13 +764,15 @@ void printInfo(Game* juego, Boost* boost , int score, int time, int numJugadores
     printBoost( boost );
 }
 
-void juego(int numJugadores , int modo, char* nombreP1, char* nombreP2){
+void juego(int numJugadores , int nivelInf, char* nombreP1, char* nombreP2){
     ocultarCursor();
     Game** juego = createGame();
     Boost* boostActual = createBoost();
     importarGame( juego, numJugadores );
 
-    short nivel = 0;
+    short nivel;
+    if(nivelInf != -1) nivel = nivelInf;
+    else nivel = 0;
     float delayBoost = 1;
     int scoreBoost = 1;
     int time = 0;
@@ -866,11 +868,14 @@ void juego(int numJugadores , int modo, char* nombreP1, char* nombreP2){
                 printInfo(juego[nivel], boostActual, score, time, numJugadores);
                 break;
             }
-            if(score >= 2000 * pow(2, nivel)){
-                borrarPowerUp(boostActual);
-                nivel += 1;
-                break;
+            if(nivelInf == -1){
+               if(score >= 2000 * pow(2, nivel)){
+                    borrarPowerUp(boostActual);
+                    nivel += 1;
+                    break;
+                } 
             }
+            
             
             printInfo(juego[nivel], boostActual, score, time, numJugadores);
         }
