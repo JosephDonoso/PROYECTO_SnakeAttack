@@ -434,11 +434,39 @@ void moverMisiles(Game* juego, Boost* boost, int time ){
                 if(misil->pixel->pos.X == boost->pixel->pos.X && misil->pixel->pos.Y == boost->pixel->pos.Y){
                     borrarPowerUp(boost);
                 }
+                
                 printMisil(misil);
             }
         }
 
         misil = (Misil*) nextList(juego->misiles);
+    }
+}
+
+void validarChoqueSnakes(Player* playerA, Player* playerB){
+    Pixel* cabeza = (Pixel*) firstList(playerA->snake);
+    Pixel* snakeRival = (Pixel*) firstList(playerB->snake);
+    while(snakeRival){
+        if(cabeza->pos.X == snakeRival->pos.X && cabeza->pos.Y == snakeRival->pos.Y){
+            playerA->choco = true;
+            return;
+        }
+        snakeRival = (Pixel*) nextList(playerB->snake);
+    }
+}
+
+void validarChoqueMisil(Player* player, List* misiles){
+    Misil* misil = (Misil*) firstList( misiles );
+    while(misil){
+        Pixel* snake = (Pixel*) firstList( player->snake );
+        while(snake){
+            if( (misil->pixel->pos.X == snake->pos.X) && (misil->pixel->pos.Y == snake->pos.Y)){
+                player->choco = true; 
+                return;
+            }
+            snake = (Pixel*) nextList( player->snake );
+        }
+        misil = (Misil*) nextList( misiles );
     }
 }
 
@@ -598,9 +626,9 @@ void moverPlayers(Game* juego, Boost* boostActual, int numJugadores){
                 juego->P1->opcionMover = 0;
             }
         }
-        
         break;
     }
+    validarChoqueMisil(juego->P1, juego->misiles);
 
     if(numJugadores == 2){
         if (GetAsyncKeyState(87)){
@@ -672,6 +700,9 @@ void moverPlayers(Game* juego, Boost* boostActual, int numJugadores){
             }
             break;
         }
+        validarChoqueMisil(juego->P2, juego->misiles);
+        validarChoqueSnakes(juego->P1, juego->P2);
+        validarChoqueSnakes(juego->P2, juego->P1);
     }
 }
 
@@ -868,6 +899,7 @@ void juego(int numJugadores , int nivelInf, char* nombreP1, char* nombreP2){
                 printInfo(juego[nivel], boostActual, score, time, numJugadores);
                 break;
             }
+
             if(nivelInf == -1){
                if(score >= 2000 * pow(2, nivel)){
                     borrarPowerUp(boostActual);
