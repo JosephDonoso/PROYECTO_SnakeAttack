@@ -278,7 +278,7 @@ void importarGame( Game** juego, int numJugadores ){
             juego[nivel]->cantPowerUps += 1;
             pushFront( juego[nivel]->powerUps, nuevoBoost );
         }
-        else if( strcmp( aux, "scoreBoost") == 0 ){
+        else if( strcmp( aux, "scoreBoost") == 0 && numJugadores == 1 ){
             Boost *nuevoBoost = createBoost();
             nuevoBoost->pixel->value = (char*) 4; //♦
             juego[nivel]->cantPowerUps += 1;
@@ -311,7 +311,7 @@ void inicializarJugador( Game* juego, int numJugadores){
         jugador = (Pixel*) firstList( juego->P1->snake );
         i = 0;
         while( jugador ){
-            jugador->pos.X = mitadX - 6;
+            jugador->pos.X = mitadX + 6;
             jugador->pos.Y = mitadY + i;
             gotoxy( jugador->pos.X, jugador->pos.Y );
             printf("%c", jugador->value);
@@ -324,7 +324,7 @@ void inicializarJugador( Game* juego, int numJugadores){
         jugador = (Pixel*) firstList( juego->P2->snake );
         i = 0;
         while( jugador ){
-            jugador->pos.X = mitadX + 6;
+            jugador->pos.X = mitadX - 6;
             jugador->pos.Y = mitadY + i;
             gotoxy( jugador->pos.X, jugador->pos.Y );
             printf("%c", jugador->value);
@@ -759,7 +759,7 @@ void printInfo(Game* juego, Boost* boost , int score, int time, int numJugadores
         printf("SCORE: %5i         VIDAS: %2i       TIME: %4i         ", score, juego->P1->lives, time);    
     }
     else{
-        printf("SCORE: %5i  VIDAS PLAYER 1: %2i   VIDAS PLAYER 2: %2i   TIME: %4i   ", score, juego->P1->lives, juego->P2->lives, time);        
+        printf("VIDAS PLAYER 1: %2i   VIDAS PLAYER 2: %2i   TIME: %4i   ", juego->P1->lives, juego->P2->lives, time);        
     }
     printBoost( boost );
 }
@@ -892,7 +892,4 @@ void juego(int numJugadores , int nivelInf, char* nombreP1, char* nombreP2){
 
 }
 
-
-//DEFINITIVAMENTE ELIMINAR EL PAUSE, SOLO OCUPARLO PARA EFECTOS PRÁCTICOS
-//AGREGAR AL SEGUNDO JUGADOR Y NOMBRES A AMBOS 
 //CAMBIAR DIAGRAMA DE FLUJO PARA INGRESAR EL NOMBRE DEL USUARIO DEPENDIENDO DE LA SERPIENTE

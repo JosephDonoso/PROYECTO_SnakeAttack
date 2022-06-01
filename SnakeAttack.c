@@ -12,7 +12,7 @@ int main(){
     char nombreP2[15];
     while(true){
         if(menu(&numeroJugadores, &nivelJuego, nombreP1, nombreP2)) break;
-        numeroJugadores = 2;
+        numeroJugadores = 1;
         nivelJuego = 4;
         juego(numeroJugadores, nivelJuego, nombreP1, nombreP2);
     }
