@@ -3,8 +3,8 @@
 0,muroDown,0,111,33,~
 0,muroLeft,1,33,0,|
 0,muroRight,1,33,110,|
-0,slowBoost,◄
 0,fastBoost,►
+0,slowBoost,◄
 0,appendBoost,☺
 0,scoreBoost,♦
 0,scoreBoost,♦

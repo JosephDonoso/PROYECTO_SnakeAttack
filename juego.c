@@ -809,12 +809,13 @@ void juego(int numJugadores , int nivelInf, char* nombreP1, char* nombreP2){
     int time = 0;
     long long score = 0;
     int limiteBoost;
+
     while (juego[nivel]->P1->lives > 0 && juego[nivel]->P2->lives > 0 && nivel < 5){
         system("cls");
         system("color 0d");
         inicializarNivel( juego[nivel], numJugadores );
         printNivel(juego[nivel]->wallStatic->muroDown, nivel+1);
-        limiteBoost = -1;
+        limiteBoost = -100;
 
         while(true){
             Pixel* P1 = (Pixel*) firstList(juego[nivel]->P1->snake);
@@ -831,18 +832,22 @@ void juego(int numJugadores , int nivelInf, char* nombreP1, char* nombreP2){
                         srand(P1->pos.X * P1->pos.Y);
                     }
                     boostActual = ubicarBoostRand(juego[nivel]);
-                    limiteBoost = time+1000;
+                    limiteBoost = time + 1000;
                 }
                 if(P1->pos.X == boostActual->pixel->pos.X && P1->pos.Y == boostActual->pixel->pos.Y){
                     boostActual->activo = true;
+                    boostActual->pixel->pos.X = -1;
+                    boostActual->pixel->pos.Y = -1;
                     boostActual->refer = juego[nivel]->P1;
-                    limiteBoost = time+1900;
+                    limiteBoost = time + 1900;
                 }
                 if(numJugadores == 2){
                     if(P2->pos.X == boostActual->pixel->pos.X && P2->pos.Y == boostActual->pixel->pos.Y){
                         boostActual->activo = true;
+                        boostActual->pixel->pos.X = -1;
+                        boostActual->pixel->pos.Y = -1;
                         boostActual->refer = juego[nivel]->P2;
-                        limiteBoost = time+1900;
+                        limiteBoost = time + 1900;
                     }
                 }
                 if( boostActual->activo ){
@@ -863,7 +868,8 @@ void juego(int numJugadores , int nivelInf, char* nombreP1, char* nombreP2){
                     }
                 }
 
-                if(time == limiteBoost){
+                if( ( ((int) (time/100)) * 100) == ( ((int) (limiteBoost/100)) * 100) ){
+                    limiteBoost = -100;
                     if(!boostActual->activo){
                         borrarPowerUp( boostActual );
                     }
@@ -875,7 +881,11 @@ void juego(int numJugadores , int nivelInf, char* nombreP1, char* nombreP2){
                     }
                 }
 
-               if( (int)(time/10) % 20 == 0){
+                if(boostActual->activo && boostActual->pixel->value == (char*) 17 ){
+                    time += ( (int) time/10 % 2)*10;
+                }
+                
+                if( (int)(time/10) % 20 == 0){
                     Misil* misil = createMisil( juego[nivel] );
                     pushBack(juego[nivel]->misiles, misil );
                     printMisil(misil);
