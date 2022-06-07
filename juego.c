@@ -933,5 +933,3 @@ void juego(int numJugadores , int nivelInf, char* nombreP1, char* nombreP2){
     system("pause");
 
 }
-
-//CAMBIAR DIAGRAMA DE FLUJO PARA INGRESAR EL NOMBRE DEL USUARIO DEPENDIENDO DE LA SERPIENTE
