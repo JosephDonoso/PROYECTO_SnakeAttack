@@ -11,4 +11,8 @@ int randRange(int , int );
 
 void colorRandom(void);
 
+void dibujarLogo();
+
+void alertaMaxPantalla();
+
 #endif /* FunctAux_h */

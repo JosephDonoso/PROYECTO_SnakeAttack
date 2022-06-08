@@ -1,5 +1,45 @@
+#include <stdio.h>
 #include <windows.h>
 #include "functAux.h"
+
+void alertaMaxPantalla(){
+    printf("\n\n\n        PARA CONSEGUIR UNA MEJOR EXPERIENCIA DE JUEGO SE RECOMIENDA AL USUARIO MAXIMIZAR LA PANTALLA\n");
+    printf("        ");
+    system("pause");
+    system("cls");
+    GetAsyncKeyState(VK_RETURN);
+}
+
+void dibujarLogo(){
+    printf("\n\n\n");
+    printf("                              # # #                     # # #      # #        # # #               # # #                       \n");
+    printf("                           # # # # #      # # # #      # # #     # # # #    # # # #         # #  # # # #                      \n");
+    printf("                        # # # # # # #     # # # #     # # #     # # # # #   # # # #        # # #  # # #                       \n");
+    printf("                      # # # # #           # # # #     # # #    # # # # # #    # # #       # # #  # # #                        \n");
+    printf("                     # # # #               # # # #    # # #    # #   # # #      # # #    # # #  # #                           \n");
+    printf("                     # # #       # # #     # # # #    # # #   # #      # # #      # # # # # #  # # #    # #                   \n");
+    printf("                     # # # # # # # # # #   # # # # #  # # #  # #       # # # # #   # # # # #    # # # # # #                   \n");
+    printf("                      # # # # # # # # # #  # #   # # # # #  # # # # # # # # # #    # # # #       # # # # #                    \n");
+    printf("                                 # # # #   # #     # # # #  # # # # # # # # #    # # # # # #      # # # #                     \n");
+    printf("                                # # # #  # # #      # # #  # # #       # # # #   # # #   # # #     # # #   # #                \n");
+    printf("                        # # # # # # #   # # #             # # #         # # # #  # # #     # # #    # # # # #                 \n");
+    printf("                         # # # # #                       # # #                  # # # #      # # #   # # # #                  \n");
+    printf("                          # # #                                                   # # #               # #                     \n");
+    printf("                                                                                                                              \n");
+    printf("              # #      # # # # # # # # #  # # # # # # # # #        # #               # # # # #       # # #                    \n");
+    printf("             # # #     # # # # # # # # #  # # # # # # # # #       # # #            # # # # # # #   # # # #         # #        \n");
+    printf("            # # # #    # # # # # # # # #  # # # # # # # # #      # # # #          # # # # # # # #  # # # #        # # #       \n");
+    printf("           # # # # #   # #   # # #        # #   # # #           # # # # #        # # # #    # # #  # # # #       # # #        \n");
+    printf("          # #   # # #        # # #              # # #          # #   # # #       # # #              # # # #    # # #          \n");
+    printf("         # #      # # #      # # #              # # #         # #      # # #     # # #               # # # # # # # #          \n");
+    printf("        # #       # # # # #  # # #              # # #        # #       # # # # # # # #                # # # # # # #           \n");
+    printf("       # # # # # # # # # #   # # #              # # #       # # # # # # # # # #  # # #                # # # # # #             \n");
+    printf("      # # # # # # # # #      # # #              # # #      # # # # # # # # #     # # # #    # # #      # # # # # # #          \n");
+    printf("     # # #       # # # #     # # #              # # #     # # #       # # # #     # # # # # # # #      # # # #   # # #        \n");
+    printf("    # # #         # # # #    # # #              # # #    # # #         # # # #     # # # # # # #       # # # #     # # #      \n");
+    printf("   # # #                    # # # #            # # # #  # # #                        # # # # #         # # # #      # # #     \n");
+    printf("                                                                                                         # # #                \n");
+}
 
 void ocultarCursor(){
     HANDLE consola = GetStdHandle(STD_OUTPUT_HANDLE);

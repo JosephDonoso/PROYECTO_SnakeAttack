@@ -22,13 +22,14 @@ bool cambiarOpcion(short * opcion){
     Sleep(250);
     fflush(stdin);
     getch();
+
     if( GetAsyncKeyState(VK_UP) ){
         *opcion -= 1;
     }
     else if( GetAsyncKeyState(VK_DOWN) ){
         *opcion += 1;
     }
-    else if( GetAsyncKeyState(VK_LEFT) ){
+    else if( GetAsyncKeyState(VK_RETURN) ){
         return false;
     }
     return true;
@@ -36,8 +37,8 @@ bool cambiarOpcion(short * opcion){
 
 void ubicarFlecha(short opcion){
 
-    gotoxy(3,3 + opcion);
-    printf("-->%i", opcion);
+    gotoxy(50,31 + opcion);
+    printf("-->");
 
 }
 
@@ -47,14 +48,15 @@ void menuNivel(Propiedades* prop){
 
         while(true){
             system("cls");
-
-            printf("\n\n\n");
-            printf("        Nivel 1\n");
-            printf("        Nivel 2\n");
-            printf("        Nivel 3\n");
-            printf("        Nivel 4\n");
-            printf("        Nivel 5\n");
-            printf("        VOLVER\n");
+            gotoxy(0, 0);
+            dibujarLogo();
+            gotoxy(0, 31);
+            printf("                                                       Nivel 1\n");
+            printf("                                                       Nivel 2\n");
+            printf("                                                       Nivel 3\n");
+            printf("                                                       Nivel 4\n");
+            printf("                                                       Nivel 5\n");
+            printf("                                                       VOLVER\n");
             
             opcion = opcion % 6;
             if(opcion < 0) opcion = 6 + opcion;
@@ -93,11 +95,12 @@ void menuModo(Propiedades* prop){
 
         while(true){
             system("cls");
-
-            printf("\n\n\n");
-            printf("        MODO CLASICO\n");
-            printf("        MODO INFINITO\n");
-            printf("        VOLVER\n");
+            gotoxy(0, 0);
+            dibujarLogo();
+            gotoxy(0, 31);
+            printf("                                                       MODO CLASICO\n");
+            printf("                                                       MODO INFINITO\n");
+            printf("                                                       VOLVER\n");
             
             opcion = opcion % 3;
             if(opcion < 0) opcion = 3 + opcion;
@@ -127,11 +130,12 @@ void menuJugadores(Propiedades* prop){
 
         while(true){
             system("cls");
-
-            printf("\n\n\n");
-            printf("        1 JUGADOR\n");
-            printf("        2 JUGADORES\n");
-            printf("        VOLVER\n");
+            gotoxy(0, 0);
+            dibujarLogo();
+            gotoxy(0, 31);
+            printf("                                                       1 JUGADOR\n");
+            printf("                                                       2 JUGADORES\n");
+            printf("                                                       VOLVER\n");
             
             opcion = opcion % 3;
             if(opcion < 0) opcion = 3 + opcion;
@@ -165,12 +169,13 @@ void menuPrincipal(Propiedades* prop){
 
         while(true){
             system("cls");
-
-            printf("\n\n\n");
-            printf("        JUGAR\n");
-            printf("        HIGHSCORE\n");
-            printf("        COMO JUGAR\n");
-            printf("        SALIR\n");
+            gotoxy(0, 0);
+            dibujarLogo();
+            gotoxy(0, 31);
+            printf("                                                       JUGAR\n");
+            printf("                                                       HIGHSCORE\n");
+            printf("                                                       COMO JUGAR\n");
+            printf("                                                       SALIR\n");
 
             opcion = opcion % 4;
             if(opcion < 0) opcion = 4 + opcion;
@@ -197,12 +202,11 @@ void menuPrincipal(Propiedades* prop){
 }
 
 bool menu(int* numJugadores , int* nivelJuego, char* nombreP1, char* nombreP2 ){
-
     Propiedades* prop = (Propiedades*) malloc(sizeof(Propiedades));
     //importarHighscore();
     prop->flag = false;
 
-    system("color 07");
+    system("color 0E");
     menuPrincipal( prop );
 
     *numJugadores = prop->numJugadores;
@@ -212,7 +216,3 @@ bool menu(int* numJugadores , int* nivelJuego, char* nombreP1, char* nombreP2 ){
 
     return prop->flag;
 }
-
-
-
-

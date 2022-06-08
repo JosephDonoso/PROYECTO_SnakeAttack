@@ -1,8 +1,11 @@
 #include <stdbool.h>
+#include <windows.h>
+#include <stdio.h>
 
 #include "list.h"
 #include "menu.h"
 #include "juego.h"
+#include "functAux.h"
 
 int main(){
 
@@ -10,10 +13,9 @@ int main(){
     int nivelJuego;
     char nombreP1[15];
     char nombreP2[15];
+    alertaMaxPantalla();
     while(true){
         if(menu(&numeroJugadores, &nivelJuego, nombreP1, nombreP2)) break;
-        //numeroJugadores = 1;
-        //nivelJuego = -1;
         juego(numeroJugadores, nivelJuego, nombreP1, nombreP2);
     }
     
