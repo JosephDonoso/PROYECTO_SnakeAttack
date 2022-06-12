@@ -33,7 +33,7 @@
 2,muroDown,1,92,29,~
 2,muroLeft,2,29,1,|
 2,muroRight,2,29,91,|
-2,liveBoost,♥
+2,lifeBoost,♥
 2,appendBoost,☺
 2,reverseBoost,§
 2,scoreBoost,♦
@@ -57,8 +57,8 @@
 3,scoreBoost,♦
 3,scoreBoost,♦
 3,appendBoost,☺
-3,liveBoost,♥
-3,liveBoost,♥
+3,lifeBoost,♥
+3,lifeBoost,♥
 3,reverseBoost,§
 3,colorBoost,☼
 3,fastBoost,►
@@ -73,9 +73,9 @@
 4,muroLeft,2,21,1,|
 4,muroRight,2,21,71,|
 4,scoreBoost,♦
-4,liveBoost,♥
-4,liveBoost,♥
-4,liveBoost,♥
+4,lifeBoost,♥
+4,lifeBoost,♥
+4,lifeBoost,♥
 4,reverseBoost,§
 4,fastBoost,►
 4,slowBoost,◄

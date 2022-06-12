@@ -6,25 +6,24 @@ void alertaMaxPantalla(){
     printf("\n\n\n        PARA CONSEGUIR UNA MEJOR EXPERIENCIA DE JUEGO SE RECOMIENDA AL USUARIO MAXIMIZAR LA PANTALLA\n");
     printf("        ");
     system("pause");
-    system("cls");
     GetAsyncKeyState(VK_RETURN);
 }
 
 void dibujarLogo(){
     printf("\n\n\n");
-    printf("                              # # #                     # # #      # #        # # #               # # #                       \n");
-    printf("                           # # # # #      # # # #      # # #     # # # #    # # # #         # #  # # # #                      \n");
-    printf("                        # # # # # # #     # # # #     # # #     # # # # #   # # # #        # # #  # # #                       \n");
-    printf("                      # # # # #           # # # #     # # #    # # # # # #    # # #       # # #  # # #                        \n");
-    printf("                     # # # #               # # # #    # # #    # #   # # #      # # #    # # #  # #                           \n");
-    printf("                     # # #       # # #     # # # #    # # #   # #      # # #      # # # # # #  # # #    # #                   \n");
-    printf("                     # # # # # # # # # #   # # # # #  # # #  # #       # # # # #   # # # # #    # # # # # #                   \n");
-    printf("                      # # # # # # # # # #  # #   # # # # #  # # # # # # # # # #    # # # #       # # # # #                    \n");
+    printf("                              # # #                     # # #      # #         # # #               # # #                      \n");
+    printf("                           # # # # #      # # # #      # # #      # # #      # # # #         # #  # # # #                     \n");
+    printf("                        # # # # # # #     # # # #     # # #      # # # #     # # # #        # # #  # # #                      \n");
+    printf("                      # # # # #           # # # #     # # #     # # # # #    # # # #       # # #  # # #                       \n");
+    printf("                     # # # #               # # # #    # # #    # #   # # #    # # # #    # # #   # #                          \n");
+    printf("                     # # #       # # #     # # # #    # # #   # #      # # #   # # # # # # # #  # #    # #                    \n");
+    printf("                     # # # # # # # # # #   # # # # #  # # #  # #       # # # # #  # # # # # #   # # # # # #                   \n");
+    printf("                      # # # # # # # # # #  # #   # # # # #  # # # # # # # # # #  # # # # # #     # # # # #                    \n");
     printf("                                 # # # #   # #     # # # #  # # # # # # # # #    # # # # # #      # # # #                     \n");
-    printf("                                # # # #  # # #      # # #  # # #       # # # #   # # #   # # #     # # #   # #                \n");
-    printf("                        # # # # # # #   # # #             # # #         # # # #  # # #     # # #    # # # # #                 \n");
-    printf("                         # # # # #                       # # #                  # # # #      # # #   # # # #                  \n");
-    printf("                          # # #                                                   # # #               # #                     \n");
+    printf("                                # # # #  # # #      # # #  # # #       # # # #   # # # #  # # #    # # #   # #                \n");
+    printf("                        # # # # # # #   # # #             # # #         # # # #  # # # #    # # #   # # # # #                 \n");
+    printf("                         # # # # #                       # # #                   # # # #      # # #  # # # #                  \n");
+    printf("                          # # #                                                    # # #              # #                     \n");
     printf("                                                                                                                              \n");
     printf("              # #      # # # # # # # # #  # # # # # # # # #        # #               # # # # #       # # #                    \n");
     printf("             # # #     # # # # # # # # #  # # # # # # # # #       # # #            # # # # # # #   # # # #         # #        \n");
@@ -56,6 +55,24 @@ void gotoxy(int x, int y){
     pos.X = x;
     pos.Y = y;
     SetConsoleCursorPosition(consola, pos);
+}
+
+void GetAllKeys(){
+    GetAsyncKeyState(VK_UP);
+    GetAsyncKeyState(73);
+    GetAsyncKeyState(VK_DOWN);
+    GetAsyncKeyState(75);
+    GetAsyncKeyState(VK_RIGHT);
+    GetAsyncKeyState(76);
+    GetAsyncKeyState(VK_LEFT);
+    GetAsyncKeyState(74);
+
+    GetAsyncKeyState(87);
+    GetAsyncKeyState(83);
+    GetAsyncKeyState(68);
+    GetAsyncKeyState(65);
+
+    GetAsyncKeyState(VK_RETURN);
 }
 
 const char *get_csv_field (char * tmp, int k) {

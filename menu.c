@@ -37,7 +37,7 @@ bool cambiarOpcion(short * opcion){
 
 void ubicarFlecha(short opcion){
 
-    gotoxy(50,31 + opcion);
+    gotoxy(55,31 + opcion);
     printf("-->");
 
 }
@@ -51,12 +51,12 @@ void menuNivel(Propiedades* prop){
             gotoxy(0, 0);
             dibujarLogo();
             gotoxy(0, 31);
-            printf("                                                       Nivel 1\n");
-            printf("                                                       Nivel 2\n");
-            printf("                                                       Nivel 3\n");
-            printf("                                                       Nivel 4\n");
-            printf("                                                       Nivel 5\n");
-            printf("                                                       VOLVER\n");
+            printf("                                                            Nivel 1\n");
+            printf("                                                            Nivel 2\n");
+            printf("                                                            Nivel 3\n");
+            printf("                                                            Nivel 4\n");
+            printf("                                                            Nivel 5\n");
+            printf("                                                            VOLVER\n");
             
             opcion = opcion % 6;
             if(opcion < 0) opcion = 6 + opcion;
@@ -67,19 +67,19 @@ void menuNivel(Propiedades* prop){
 
         switch (opcion)
         {
-        case 0: //SIGUIENTE
+        case 0: //NIVEL 1 - SIGUIENTE
             prop->nivelJuego = 0;
             return;
-        case 1: //SIGUIENTE
+        case 1: //NIVEL 2 - SIGUIENTE
             prop->nivelJuego = 1;
             return;
-        case 2: //SIGUIENTE
+        case 2: //NIVEL 3 - SIGUIENTE
             prop->nivelJuego = 2;
             return;
-        case 3: //SIGUIENTE
+        case 3: //NIVEL 4 - SIGUIENTE
             prop->nivelJuego = 3;
             return;
-        case 4: //SIGUIENTE
+        case 4: //NIVEL 5 - SIGUIENTE
             prop->nivelJuego = 4;
             return;
         case 5: //VOLVER
@@ -98,9 +98,9 @@ void menuModo(Propiedades* prop){
             gotoxy(0, 0);
             dibujarLogo();
             gotoxy(0, 31);
-            printf("                                                       MODO CLASICO\n");
-            printf("                                                       MODO INFINITO\n");
-            printf("                                                       VOLVER\n");
+            printf("                                                            MODO CLASICO\n");
+            printf("                                                            MODO INFINITO\n");
+            printf("                                                            VOLVER\n");
             
             opcion = opcion % 3;
             if(opcion < 0) opcion = 3 + opcion;
@@ -110,10 +110,10 @@ void menuModo(Propiedades* prop){
 
         switch (opcion)
         {
-        case 0: //SIGUIENTE, MODO CLÁSICO
+        case 0: //MODO CLÁSICO - SIGUIENTE 
             prop->nivelJuego = -1;
             return;
-        case 1: //SIGUIENTE, MODO INFINITO
+        case 1: //MODO INFINITO - SIGUIENTE 
             menuNivel(prop);
             return;
         case 2: //VOLVER
@@ -133,9 +133,9 @@ void menuJugadores(Propiedades* prop){
             gotoxy(0, 0);
             dibujarLogo();
             gotoxy(0, 31);
-            printf("                                                       1 JUGADOR\n");
-            printf("                                                       2 JUGADORES\n");
-            printf("                                                       VOLVER\n");
+            printf("                                                            1 JUGADOR\n");
+            printf("                                                            2 JUGADORES\n");
+            printf("                                                            VOLVER\n");
             
             opcion = opcion % 3;
             if(opcion < 0) opcion = 3 + opcion;
@@ -145,12 +145,12 @@ void menuJugadores(Propiedades* prop){
 
         switch (opcion)
         {
-        case 0: //SIGUIENTE
+        case 0: //1 JUGADOR - SIGUIENTE
             prop->numJugadores = 1;
             //recibirNombre(prop->nombreP1, 0);
             menuModo(prop);
             return;
-        case 1: //SIGUIENTE
+        case 1: //2 JUGADORES - SIGUIENTE
             prop->numJugadores = 2;
             //recibirNombre(prop->nombreP1, 1);
             //recibirNombre(prop->nombreP1, 2);
@@ -172,10 +172,10 @@ void menuPrincipal(Propiedades* prop){
             gotoxy(0, 0);
             dibujarLogo();
             gotoxy(0, 31);
-            printf("                                                       JUGAR\n");
-            printf("                                                       HIGHSCORE\n");
-            printf("                                                       COMO JUGAR\n");
-            printf("                                                       SALIR\n");
+            printf("                                                            JUGAR\n");
+            printf("                                                            HIGHSCORE\n");
+            printf("                                                            COMO JUGAR\n");
+            printf("                                                            SALIR\n");
 
             opcion = opcion % 4;
             if(opcion < 0) opcion = 4 + opcion;
@@ -205,7 +205,7 @@ bool menu(int* numJugadores , int* nivelJuego, char* nombreP1, char* nombreP2 ){
     Propiedades* prop = (Propiedades*) malloc(sizeof(Propiedades));
     //importarHighscore();
     prop->flag = false;
-
+    system("cls");
     system("color 0E");
     menuPrincipal( prop );
 
@@ -213,6 +213,8 @@ bool menu(int* numJugadores , int* nivelJuego, char* nombreP1, char* nombreP2 ){
     *nivelJuego = prop->nivelJuego;
     /*strcpy(nombreP1, prop->nombreP1); 
     strcpy(nombreP2, prop->nombreP2);*/
+
+    GetAllKeys();
 
     return prop->flag;
 }
