@@ -406,14 +406,10 @@ void inicializarNivel( Game* juego, int numJugadores ){
 //Dibua al jugador en la pantalla
 void printCabezaJugador(List* player){
     Pixel* jugador = (Pixel*) firstList( player );
-    gotoxy( jugador->pos.X, jugador->pos.Y );
-    printf("%c", jugador->value);
-    /*while( jugador ){
+    if(jugador){
         gotoxy( jugador->pos.X, jugador->pos.Y );
         printf("%c", jugador->value);
-        jugador =  (Pixel*) nextList( player );
     }
-    */
 }
 
 void printMisil(Misil* misil){
@@ -444,6 +440,8 @@ void moverMisiles(Game* juego, Boost* boost, int time ){
 
         misil = (Misil*) nextList(juego->misiles);
     }
+    printCabezaJugador(juego->P1->snake);
+    printCabezaJugador(juego->P2->snake);
 }
 
 void validarChoqueMisil(Player* player, List* misiles){
@@ -792,6 +790,28 @@ void printBoost(Boost* boost){
     else printf("             ");
 }
 
+void imprimirPierdeVida(int numJugadores, bool chocoP1, bool chocoP2){
+    GetAllKeys();
+    gotoxy(20, 5);
+    if(numJugadores == 1){
+        printf("OH NOO... PIERDES UNA VIDA");
+    }
+    else{
+        if(chocoP1 && chocoP2){
+            printf("OH NOO... AMBOS PIERDEN UNA VIDA");
+        }
+        else if(chocoP1){
+            printf("OH NOO... JUGADOR 1 PIERDE UNA VIDA");
+        }
+        else{
+            printf("OH NOO... JUGADOR 2 PIERDE UNA VIDA");
+        }
+    }
+    gotoxy(20, 7);
+    system("pause");
+    GetAllKeys();
+}
+
 void printInfo(Game* juego, Boost* boost , int score, int time, int numJugadores ){
     Pixel* bordeInf = (Pixel*) firstList(juego->wallStatic->muroDown);
     gotoxy(5,bordeInf->pos.Y + 2);
@@ -800,9 +820,31 @@ void printInfo(Game* juego, Boost* boost , int score, int time, int numJugadores
         printf("SCORE: %5i         VIDAS: %2i       TIME: %4i         ", score, juego->P1->lifes, time);    
     }
     else{
-        printf("VIDAS PLAYER 1: %2i   VIDAS PLAYER 2: %2i   TIME: %4i   ", juego->P1->lifes, juego->P2->lifes, time);        
+        printf("VIDAS PLAYER 1: %2i   VIDAS PLAYER 2: %2i   TIME: %4i   ", juego->P1->lifes, juego->P2->lifes, time);   
     }
     printBoost( boost );
+}
+
+void infoFinalJuego(Game* juego, int numJugadores, int score ){
+    GetAllKeys();
+    gotoxy(20, 5);
+    if(numJugadores == 1){
+        printf("TE HAS QUEDADO SIN VIDAS Y TU PUNTUACION ES DE %i PUNTOS", score);
+    }
+    else{
+        if(juego->P1->lifes == 0 && juego->P2->lifes == 0){
+            printf("ES UN EMPATE");
+        }
+        else if(juego->P1->lifes != 0){
+            printf("GANO EL JUGADOR 1");
+        }
+        else{
+            printf("GANO EL JUGADOR 2");
+        }
+    }
+    gotoxy(20, 7);
+    system("pause");
+    GetAllKeys();
 }
 
 void juego(int numJugadores , int nivelInf, char* nombreP1, char* nombreP2){
@@ -821,8 +863,6 @@ void juego(int numJugadores , int nivelInf, char* nombreP1, char* nombreP2){
     int limiteBoost;
 
     while (juego[nivel]->P1->lifes > 0 && juego[nivel]->P2->lifes > 0 && nivel < 5){
-        system("cls");
-        system("color 0d");
         inicializarNivel( juego[nivel], numJugadores );
         printNivel(juego[nivel]->wallStatic->muroDown, nivel+1);
         limiteBoost = -100;
@@ -920,30 +960,35 @@ void juego(int numJugadores , int nivelInf, char* nombreP1, char* nombreP2){
                 if(juego[nivel]->P2->choco){
                     juego[nivel]->P2->lifes -= 1;
                 }
-                printInfo(juego[nivel], boostActual, score, time, numJugadores);
+                //printInfo(juego[nivel], boostActual, score, time, numJugadores);
+                system("cls");
+                system("color 0d");
+                imprimirPierdeVida(numJugadores, juego[nivel]->P1->choco, juego[nivel]->P2->choco);
                 break;
             }
 
-            if(nivelInf == -1){
-               if(score >= 2000 * pow(2, nivel)){
-                    borrarPowerUp(boostActual);
-                    nivel += 1;
-                    break;
-                } 
+            if(nivelInf == -1 && nivel < 4){
+                if(numJugadores == 1){
+                    if(score >= 2000 * pow(2, nivel)){
+                        borrarPowerUp(boostActual);
+                        nivel += 1;
+                        break;
+                    } 
+                }
+                else{
+                    if(time >= 10000 * (nivel + 1) ){
+                        borrarPowerUp(boostActual);
+                        nivel += 1;
+                        break;
+                    } 
+                }
             }
-            
-            
+
             printInfo(juego[nivel], boostActual, score, time, numJugadores);
         }
-
+        system("cls");
+        system("color 0d");
     }
-
-    if(juego[nivel]->P1->lifes == 0){
-        printf("HA PERDIDO");
-    }
-    else{
-        printf("WOW LO HA CONSEGUIDO!!");
-    }
-    system("pause");
-
+    
+    infoFinalJuego( juego[nivel], numJugadores, score);
 }
