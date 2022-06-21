@@ -205,6 +205,7 @@ bool menu(int* numJugadores , int* nivelJuego, char* nombreP1, char* nombreP2 ){
     prop->flag = false;
     system("cls");
     system("color 0E");
+    sndPlaySound( "musica//menu.wav" , SND_ASYNC | SND_LOOP);
     menuPrincipal( prop );
 
     *numJugadores = prop->numJugadores;

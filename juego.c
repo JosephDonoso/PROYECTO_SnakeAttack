@@ -397,6 +397,7 @@ void inicializarMisiles(Game* juego){
 
 //Inicializa un nuevo nivel en caso de pasar al siguiente o perder una vida
 void inicializarNivel( Game* juego, int numJugadores ){
+    sndPlaySound( "musica//juego.wav" , SND_ASYNC | SND_LOOP);
     inicializarJugador( juego, numJugadores );
     inicializarBordes( juego->wallStatic );
     inicializarPowerUps( juego->powerUps );
@@ -847,19 +848,19 @@ void infoFinalJuego(Game* juego, int numJugadores, int score ){
     GetAllKeys();
 }
 
-void juego(int numJugadores , int nivelInf, char* nombreP1, char* nombreP2){
+void juego(int numJugadores , int modoJuego, char* nombreP1, char* nombreP2){
     ocultarCursor();
     Game** juego = createGame();
     Boost* boostActual = createBoost();
     importarGame( juego, numJugadores );
 
     short nivel;
-    if(nivelInf != -1) nivel = nivelInf;
+    if(modoJuego != -1) nivel = modoJuego;
     else nivel = 0;
     float delayBoost = 1;
     int scoreBoost = 1;
     int time = 0;
-    long long score = 0;
+    long long score = -2;
     int limiteBoost;
 
     while (juego[nivel]->P1->lifes > 0 && juego[nivel]->P2->lifes > 0 && nivel < 5){
@@ -875,9 +876,9 @@ void juego(int numJugadores , int nivelInf, char* nombreP1, char* nombreP2){
             Sleep( (int) (DELAY * delayBoost) );
             scoreBoost = 1;
             delayBoost = 1;
+            printInfo(juego[nivel], boostActual, score, time, numJugadores);
 
             moverPlayers(juego[nivel], boostActual, numJugadores);
-            
             if(juego[nivel]->P1->opcionMover != -1 ){
                 if((int)(time/10) % 300 == 0){
                     if(time == 3000){
@@ -960,16 +961,17 @@ void juego(int numJugadores , int nivelInf, char* nombreP1, char* nombreP2){
                 if(juego[nivel]->P2->choco){
                     juego[nivel]->P2->lifes -= 1;
                 }
-                //printInfo(juego[nivel], boostActual, score, time, numJugadores);
+                sndPlaySound( "musica//colision.wav" , SND_ASYNC);
                 system("cls");
                 system("color 0d");
                 imprimirPierdeVida(numJugadores, juego[nivel]->P1->choco, juego[nivel]->P2->choco);
                 break;
             }
 
-            if(nivelInf == -1 && nivel < 4){
+            if(modoJuego == -1 && nivel < 4){
                 if(numJugadores == 1){
                     if(score >= 2000 * pow(2, nivel)){
+                        sndPlaySound( "musica//siguienteNivel.wav" , SND_SYNC);
                         borrarPowerUp(boostActual);
                         nivel += 1;
                         break;
@@ -977,14 +979,13 @@ void juego(int numJugadores , int nivelInf, char* nombreP1, char* nombreP2){
                 }
                 else{
                     if(time >= 10000 * (nivel + 1) ){
+                        sndPlaySound( "musica//siguienteNivel.wav" , SND_SYNC);
                         borrarPowerUp(boostActual);
                         nivel += 1;
                         break;
                     } 
                 }
             }
-
-            printInfo(juego[nivel], boostActual, score, time, numJugadores);
         }
         system("cls");
         system("color 0d");
