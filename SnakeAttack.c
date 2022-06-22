@@ -1,5 +1,8 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include <windows.h>
+
 
 #include "menu.h"
 #include "juego.h"
@@ -7,14 +10,13 @@
 
 int main(){
 
-    int numeroJugadores;
-    int nivelJuego;
-    char nombreP1[15];
-    char nombreP2[15];
+    int* numeroJugadores = (int*) malloc(sizeof(int));
+    int* nivelJuego = (int*) malloc(sizeof(int));
+    char nombreJugador[15];
     alertaMaxPantalla();
     while(true){
-        if(menu(&numeroJugadores, &nivelJuego, nombreP1, nombreP2)) break;
-        juego(numeroJugadores, nivelJuego, nombreP1, nombreP2);
+        if(menu(numeroJugadores, nivelJuego, nombreJugador)) break;
+        juego(*numeroJugadores, *nivelJuego, nombreJugador);
     }
     
 

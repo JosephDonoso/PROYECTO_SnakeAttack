@@ -149,8 +149,11 @@ Misil* createMisil( Game* juego ){
 //Importa desde un csv de propiedades las características del juego
 void importarGame( Game** juego, int numJugadores ){
     FILE* fp = NULL;
-    fp = fopen ( "PropiedadesJuego.csv", "r");
+    fp = fopen ( "archivosCSV\\PropiedadesJuego.csv", "r");
     if(!fp){
+        system("cls");
+        system("color 0d");
+        gotoxy(0,0);
         printf("ERROR AL ABRIR EL ARCHIVO DE PROPIEDADES DEL JUEGO\n");
         system("pause");
         exit(1);
@@ -848,7 +851,28 @@ void infoFinalJuego(Game* juego, int numJugadores, int score ){
     GetAllKeys();
 }
 
-void juego(int numJugadores , int modoJuego, char* nombreP1, char* nombreP2){
+void agregarScore(int modoJuego, int score, char* nombre){
+    FILE *fp;
+ 	fp = fopen ( "archivosCSV\\HighScores.csv", "r+" );
+ 	
+    if(!fp){
+        system("cls");
+        system("color 0d");
+        gotoxy(0,0);
+        printf("ERROR AL ABRIR EL ARCHIVO PARA AGREGAR UN NUEVO HIGHSCORE\n");
+        system("pause");
+        exit(1);
+    }
+
+    while (feof(fp) == 0){
+        fgetc(fp);
+    }
+    fprintf(fp, "%i,%i,%s\n", modoJuego, score, nombre);
+
+ 	fclose ( fp );
+}
+
+void juego(int numJugadores , int modoJuego, char* nombreJugador){
     ocultarCursor();
     Game** juego = createGame();
     Boost* boostActual = createBoost();
@@ -992,4 +1016,8 @@ void juego(int numJugadores , int modoJuego, char* nombreP1, char* nombreP2){
     }
     
     infoFinalJuego( juego[nivel], numJugadores, score);
+
+    if(numJugadores == 1){
+        agregarScore(modoJuego + 1, score, nombreJugador);
+    }
 }

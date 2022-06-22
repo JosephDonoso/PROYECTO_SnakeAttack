@@ -17,4 +17,6 @@ void alertaMaxPantalla(void);
 
 void GetAllKeys(void);
 
+int higher_than(void* , void* );
+
 #endif /* FunctAux_h */

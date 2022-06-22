@@ -188,3 +188,10 @@ E= Amarillo Claro
 F= Blanco Brillante
 */
 }
+
+int higher_than(void* key1, void* key2){
+    double* k1=(double*) key1;
+    double* k2=(double*) key2;
+    if(*k1 >= *k2) return 1;
+    return 0;
+}

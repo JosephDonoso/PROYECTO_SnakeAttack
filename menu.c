@@ -7,15 +7,149 @@
 
 #include "list.h"
 #include "menu.h"
+#include "treemap.h"
 #include "functAux.h"
 
 struct Propiedades{
     int numJugadores;
     int nivelJuego;
-    char nombreP1[15];
-    char nombreP2[15];
+    char nombreJugador[15];
     bool flag;
 };
+
+TreeMap ** createArrTreeMaps(){
+    TreeMap ** Mapas = (TreeMap**) malloc(6 * sizeof(TreeMap*));
+    for(int i = 0; i < 6; i++){
+        Mapas[i] = createTreeMap(higher_than);
+    }
+    return Mapas;
+}
+
+void instrucciones(){
+    system("cls");
+    gotoxy(0,5);
+    printf("       ====================================== INSTRUCCIONES ======================================        \n");
+    printf("       Luego de escoger el numero de jugadores y el modo de juego, la partida iniciara en un mapa\n");
+    printf("       rectangular, donde el objetivo sera sobrevivir sin chocar con los bordes, los proyectiles\n");
+    printf("       que recorren la pantalla o la cola de la serpiente del otro jugador, en caso que hubiese.\n");
+    printf("       Las vidas con las que el jugador iniciara en cada nivel son 5 y las secciones de la\n");
+    printf("       serpiente del jugador podra crecer hasta 5 secciones. El movimiento del jugador sera\n");
+    printf("       constante hasta que cambie de direccion.\n\n");
+    printf("       ======================================= POWER-UPS =========================================        \n");
+    printf("       Apareceran por el mapa distintos tipos de Boost cada 30 segundos, si ningun jugador lo\n");
+    printf("       recoge este desaparecera en 10 segundos, tambien desaparecera si algun proyectil lo\n");
+    printf("       colisiona. Existen Boost con efectos de un solo uso y otros activos donde su efecto dura\n");
+    printf("       19 segundos, estos seran los siguientes:\n");
+    printf("       %c: De un uso. Otorga una vida extra.\n",(char*) 3);
+    printf("       %c: De un uso. Cambia el color de los elementos\n",(char*) 15);
+    printf("       %c: De un uso. Agrega una nueva seccion a la serpiente\n",(char*) 1);
+    printf("       %c: Activo. El juego avanza mas lento mientras dure el efecto\n",(char*) 17);
+    printf("       %c: Activo. El juego avanza mas rapido mientras dure el efecto\n",(char*) 16);
+    printf("       %c: Activo. Los controles se invertiran mientras dure el efecto\n",(char*) 21);
+    printf("       %c: Activo. El puntaje del jugador aumenta mas rapido (solo para 1 jugador)\n\n",(char*) 4);
+    printf("       ===================================== MODOS DE JUEGO ======================================        \n");
+    printf("       Habran 2 modos de juego:\n");
+    printf("       Modo clasico: Donde el o los juagadores empezaran del nivel 1 y avanzaran hasta el 5\n");
+    printf("       Modo infinito: Donde escogeran el nivel en el que jugaran y no podran pasar a otro\n");
+    printf("       A la misma vez se podra escoger entre 1 o 2 jugadores. Con el modo 1 jugador, el puntaje\n");
+    printf("       sera lo mas importante, deberan sobrevivir para obtener los mayores puntajes en su\n");
+    printf("       categoria y su nombre quedara registrado en el highscore. Con el modo 2 jugadores, ambos\n");
+    printf("       se enfrentaran por ganar la partida, quien se quede sin vidas perdera.\n\n");
+    printf("       ======================================= CONTROLES =========================================        \n");
+    printf("       Las teclas de movimiento para el jugador 1:\n");
+    printf("       Arriba: I o cursor de navegacion UP\n");
+    printf("       Abajo: K o cursor de navegacion DOWN\n");
+    printf("       Izquierda: J o cursor de navegacion LEFT\n");
+    printf("       Derecha: L o cursor de naveacion RIGHT\n");
+    printf("       Las teclas de movimiento para el jugador 2:\n");
+    printf("       Arriba: W\n");
+    printf("       Abajo: S\n");
+    printf("       Izquierda: A\n");
+    printf("       Derecha: D\n\n");
+    printf("       "), system("pause");
+
+}
+
+void importarHighscore(TreeMap** Mapas){
+    FILE *fp;
+ 	fp = fopen ( "archivosCSV\\HighScores.csv", "r" );
+ 	
+    if(!fp){
+        system("cls");
+        gotoxy(0,0);
+        printf("ERROR AL ABRIR EL ARCHIVO PARA LEER EL HIGHSCORE\n");
+        system("pause");
+        exit(1);
+    }
+
+    char linea[1024];
+    fgets (linea, 1023, fp);
+    char* aux;
+    int nivel;
+    while (fgets (linea, 1023, fp) != NULL) {
+        int* score = (int*) malloc(sizeof(int));
+        char* nombre = (char*) malloc(15*sizeof(char));
+
+        aux = (char *) get_csv_field(linea, 0);
+        nivel = atoi(aux);
+        aux = (char *) get_csv_field(linea, 1);
+        *score = atoi(aux);
+        aux = (char *) get_csv_field(linea, 2);
+        strcpy(nombre, aux);
+        insertTreeMap(Mapas[nivel], score, nombre); 
+    }
+
+ 	fclose ( fp );
+}
+
+void mostrarHighscore(){
+    TreeMap ** Mapas = createArrTreeMaps();
+    importarHighscore(Mapas);
+    system("cls");
+    gotoxy(0, 0);
+    printf("\n\n\n\n                                            =========== HIGHSCORES ===========\n\n");
+    int puesto, score;
+    for(int i = 0; i < 6; i++){
+
+        if(i == 0){
+            printf("                                            ========== MODO CLASICO ==========\n");
+        }
+        else{
+            printf("                                            ====== MODO INFINITO NIVEL %i =====\n", i);
+        }
+
+        Pair* jugador = firstTreeMap(Mapas[i]);
+        if(!jugador){
+            printf("                                               NO SE REGISTRAN PUNTUACIONES   \n");    
+        } 
+        else {
+            printf("                                            PUESTO == SCORE == NOMBRE         \n");
+        }
+
+        puesto = 1;
+        while ( jugador && puesto <= 10 ){
+            score = *(int *)(jugador->key);
+            printf("                                               %2i.-   %5i    %s\n" , puesto, score, jugador->value);
+            jugador = nextTreeMap(Mapas[i]);
+            puesto += 1;
+        }
+        printf("\n");
+    }
+
+    printf("\n                                            "), system("pause");
+    free(Mapas);
+    GetAllKeys();
+}
+
+void recibirNombre(char* nombreJugador){
+    system("cls");
+    gotoxy(0, 0);
+    dibujarLogo();
+    gotoxy(50, 31);
+    printf("INGRESE SU NOMBRE: ");
+    scanf("%s", nombreJugador);
+    GetAllKeys();
+}
 
 bool cambiarOpcion(short * opcion){
     Sleep(250);
@@ -145,13 +279,11 @@ void menuJugadores(Propiedades* prop){
     {
     case 0: //1 JUGADOR - SIGUIENTE
         prop->numJugadores = 1;
-        //recibirNombre(prop->nombreP1, 0);
+        recibirNombre(prop->nombreJugador);
         menuModo(prop);
         return;
     case 1: //2 JUGADORES - SIGUIENTE
         prop->numJugadores = 2;
-        //recibirNombre(prop->nombreP1, 1);
-        //recibirNombre(prop->nombreP1, 2);
         menuModo(prop);
         return;
     case 2: //VOLVER
@@ -186,10 +318,10 @@ void menuPrincipal(Propiedades* prop){
             menuJugadores(prop);
             return;
         case 1: //HIGHSCORE
-            //mostrarHighscore();
+            mostrarHighscore();
             break;
         case 2: //COMO JUGAR
-            //instrucciones();
+            instrucciones();
             break;
         case 3: //SALIR
             prop->flag = true;
@@ -198,20 +330,18 @@ void menuPrincipal(Propiedades* prop){
     }
 }
 
-bool menu(int* numJugadores , int* nivelJuego, char* nombreP1, char* nombreP2 ){
+bool menu(int* numJugadores , int* nivelJuego, char* nombreJugador){
     Propiedades* prop = (Propiedades*) malloc(sizeof(Propiedades));
     GetAllKeys();
-    //importarHighscore();
     prop->flag = false;
     system("cls");
     system("color 0E");
     sndPlaySound( "musica//menu.wav" , SND_ASYNC | SND_LOOP);
-    menuPrincipal( prop );
 
+    menuPrincipal( prop );
     *numJugadores = prop->numJugadores;
     *nivelJuego = prop->nivelJuego;
-    /*strcpy(nombreP1, prop->nombreP1); 
-    strcpy(nombreP2, prop->nombreP2);*/
+    strcpy(nombreJugador, prop->nombreJugador); 
 
     GetAllKeys();
     system("cls");
