@@ -10,6 +10,7 @@
 #include "treemap.h"
 #include "functAux.h"
 
+//Estructura que agrupa las características de una partida
 struct Propiedades{
     int numJugadores;
     int nivelJuego;
@@ -17,6 +18,7 @@ struct Propiedades{
     bool flag;
 };
 
+//Reserva memoria para 6 mapas ordenados, uno por cada ranking distinto
 TreeMap ** createArrTreeMaps(){
     TreeMap ** Mapas = (TreeMap**) malloc(6 * sizeof(TreeMap*));
     for(int i = 0; i < 6; i++){
@@ -67,9 +69,10 @@ void instrucciones(){
     printf("       Izquierda: A\n");
     printf("       Derecha: D\n\n");
     printf("       "), system("pause");
-
+    GetAllKeys();
 }
 
+//Importa del csv de Highscores todos los rankings para 1 jugador y los clasifica por nivel entre 6 árboles
 void importarHighscore(TreeMap** Mapas){
     FILE *fp;
  	fp = fopen ( "archivosCSV\\HighScores.csv", "r" );
@@ -102,6 +105,7 @@ void importarHighscore(TreeMap** Mapas){
  	fclose ( fp );
 }
 
+//Muestra los 6 ranking por orden de modo y nivel
 void mostrarHighscore(){
     TreeMap ** Mapas = createArrTreeMaps();
     importarHighscore(Mapas);
@@ -141,6 +145,7 @@ void mostrarHighscore(){
     GetAllKeys();
 }
 
+//Se rcibe solo en caso de escoger el modo 1 jugador, ya que se registra en el ranking
 void recibirNombre(char* nombreJugador){
     system("cls");
     gotoxy(0, 0);
@@ -151,6 +156,8 @@ void recibirNombre(char* nombreJugador){
     GetAllKeys();
 }
 
+//Recibe la tecla para mover la flecha que apunta a las opciones, retorna un buleano
+//Si recibe el enter, la función retorna falso y la opción queda decidia por el usuario
 bool cambiarOpcion(short * opcion){
     Sleep(250);
     fflush(stdin);
@@ -168,11 +175,13 @@ bool cambiarOpcion(short * opcion){
     return true;
 }
 
+//Dibuja la flecha en la nueva posición
 void ubicarFlecha(short opcion){
     gotoxy(55,31 + opcion);
     printf("-->");
 }
 
+//Se limpia el espacio donde se dibuja la flecha
 void limpiarFlecha(){
     for(int i = 0; i < 6; i++){
         gotoxy(55, 31 + i); 
@@ -180,6 +189,7 @@ void limpiarFlecha(){
     }
 }
 
+//Último menú para escoger la dificultad del modo infinito
 void menuNivel(Propiedades* prop){
     short opcion = 0;
     system("cls");
@@ -224,6 +234,7 @@ void menuNivel(Propiedades* prop){
     }
 }
 
+//Menú MODO CLÁSICO - MODO INFINITO
 void menuModo(Propiedades* prop){
     short opcion = 0;
     system("cls");
@@ -256,7 +267,7 @@ void menuModo(Propiedades* prop){
     }  
 }
 
-
+//Menú para decidir el número de jugadores 1 o 2, si se escoge 1 se pedirá un nombre
 void menuJugadores(Propiedades* prop){
     short opcion = 0;
     system("cls");
@@ -292,6 +303,7 @@ void menuJugadores(Propiedades* prop){
     }
 }
 
+//El primer menú que verá el usuario
 void menuPrincipal(Propiedades* prop){
     short opcion = 0;
     while(true){
@@ -330,6 +342,8 @@ void menuPrincipal(Propiedades* prop){
     }
 }
 
+//Función que será llamada por el main del archivo principal, retorna un buleano
+//True para cerrar el programa y falso para continuar con el juego
 bool menu(int* numJugadores , int* nivelJuego, char* nombreJugador){
     Propiedades* prop = (Propiedades*) malloc(sizeof(Propiedades));
     GetAllKeys();

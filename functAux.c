@@ -2,11 +2,30 @@
 #include <windows.h>
 #include "functAux.h"
 
+//Obtiene todas las teclas que se utilizan en el juego
+void GetAllKeys(){
+    GetAsyncKeyState(VK_UP);
+    GetAsyncKeyState(73);
+    GetAsyncKeyState(VK_DOWN);
+    GetAsyncKeyState(75);
+    GetAsyncKeyState(VK_RIGHT);
+    GetAsyncKeyState(76);
+    GetAsyncKeyState(VK_LEFT);
+    GetAsyncKeyState(74);
+
+    GetAsyncKeyState(87);
+    GetAsyncKeyState(83);
+    GetAsyncKeyState(68);
+    GetAsyncKeyState(65);
+
+    GetAsyncKeyState(VK_RETURN);
+}
+
 void alertaMaxPantalla(){
     printf("\n\n\n        PARA CONSEGUIR UNA MEJOR EXPERIENCIA DE JUEGO SE RECOMIENDA AL USUARIO MAXIMIZAR LA PANTALLA\n");
     printf("        ");
     system("pause");
-    GetAsyncKeyState(VK_RETURN);
+    GetAllKeys();
 }
 
 void dibujarLogo(){
@@ -49,6 +68,7 @@ void ocultarCursor(){
     SetConsoleCursorInfo( consola, &cursInfo);
 }
 
+//Dirige el cursor a una posición de la pantalla
 void gotoxy(int x, int y){
     HANDLE consola = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD pos;
@@ -57,24 +77,7 @@ void gotoxy(int x, int y){
     SetConsoleCursorPosition(consola, pos);
 }
 
-void GetAllKeys(){
-    GetAsyncKeyState(VK_UP);
-    GetAsyncKeyState(73);
-    GetAsyncKeyState(VK_DOWN);
-    GetAsyncKeyState(75);
-    GetAsyncKeyState(VK_RIGHT);
-    GetAsyncKeyState(76);
-    GetAsyncKeyState(VK_LEFT);
-    GetAsyncKeyState(74);
-
-    GetAsyncKeyState(87);
-    GetAsyncKeyState(83);
-    GetAsyncKeyState(68);
-    GetAsyncKeyState(65);
-
-    GetAsyncKeyState(VK_RETURN);
-}
-
+//Obtiene los elementos de una fila de un csv
 const char *get_csv_field (char * tmp, int k) {
     int open_mark = 0;
     char* ret=(char*) malloc (100*sizeof(char));
@@ -115,11 +118,13 @@ const char *get_csv_field (char * tmp, int k) {
     return NULL;
 }
 
+//Entrega un número random entr un rango inicial a uno final
 int randRange(int inicial, int final){
     int rango = final - inicial;
     return (rand() % rango) + inicial;
 }
 
+//Cambia el color de los caracteres de la pantalla
 void colorRandom(){
     int opcion = rand() % 10;
 
@@ -189,6 +194,7 @@ F= Blanco Brillante
 */
 }
 
+//Función comparativa para ordenar el árbol binario de mayor a menor
 int higher_than(void* key1, void* key2){
     double* k1=(double*) key1;
     double* k2=(double*) key2;
