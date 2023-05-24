@@ -3,7 +3,7 @@
 
 typedef struct Propiedades Propiedades;
 
-bool menu();
+Propiedades* menu();
 
 void menuPrincipal(Propiedades* );
 

@@ -1,6 +1,13 @@
 #ifndef FunctAux_h
 #define FunctAux_h
 
+typedef struct Propiedades{
+    int numJugadores;
+    int nivelJuego;
+    char nombreJugador[15];
+    bool flag;
+}Propiedades;
+
 void ocultarCursor(void);
 
 void gotoxy(int , int );

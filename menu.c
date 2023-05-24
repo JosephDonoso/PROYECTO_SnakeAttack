@@ -11,12 +11,7 @@
 #include "functAux.h"
 
 //Estructura que agrupa las características de una partida
-struct Propiedades{
-    int numJugadores;
-    int nivelJuego;
-    char nombreJugador[15];
-    bool flag;
-};
+
 
 //Reserva memoria para 6 mapas ordenados, uno por cada ranking distinto
 TreeMap ** createArrTreeMaps(){
@@ -211,27 +206,15 @@ void menuNivel(Propiedades* prop){
         if(!cambiarOpcion(&opcion)) break;
     }
 
-    switch (opcion)
-    {
-    case 0: //NIVEL 1 - SIGUIENTE
-        prop->nivelJuego = 0;
-        return;
-    case 1: //NIVEL 2 - SIGUIENTE
-        prop->nivelJuego = 1;
-        return;
-    case 2: //NIVEL 3 - SIGUIENTE
-        prop->nivelJuego = 2;
-        return;
-    case 3: //NIVEL 4 - SIGUIENTE
-        prop->nivelJuego = 3;
-        return;
-    case 4: //NIVEL 5 - SIGUIENTE
-        prop->nivelJuego = 4;
-        return;
-    case 5: //VOLVER
+    if(opcion>=5){
         menuModo(prop);
         return;
     }
+    else{
+        prop->nivelJuego = opcion;
+        return;
+    }
+
 }
 
 //Menú MODO CLÁSICO - MODO INFINITO
@@ -344,7 +327,7 @@ void menuPrincipal(Propiedades* prop){
 
 //Función que será llamada por el main del archivo principal, retorna un buleano
 //True para cerrar el programa y falso para continuar con el juego
-bool menu(int* numJugadores , int* nivelJuego, char* nombreJugador){
+Propiedades* menu(){
     Propiedades* prop = (Propiedades*) malloc(sizeof(Propiedades));
     GetAllKeys();
     prop->flag = false;
@@ -353,12 +336,8 @@ bool menu(int* numJugadores , int* nivelJuego, char* nombreJugador){
     sndPlaySound( "musica//menu.wav" , SND_ASYNC | SND_LOOP);
 
     menuPrincipal( prop );
-    *numJugadores = prop->numJugadores;
-    *nivelJuego = prop->nivelJuego;
-    strcpy(nombreJugador, prop->nombreJugador); 
-
     GetAllKeys();
     system("cls");
     system("color 0d");
-    return prop->flag;
+    return prop;
 }
