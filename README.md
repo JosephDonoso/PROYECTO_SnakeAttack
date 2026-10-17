@@ -4,7 +4,7 @@ Juego de supervivencia inspirado en Snake, desarrollado en **C para la consola d
 
 ## Previsualización
 
-![Título y menú principal de SnakeAttack](docs/images/snakeattack-ejecucion.png)
+![Título y menú principal de SnakeAttack](docs/images/snakeattack-titulo.png)
 
 *Título y menú principal del juego. Imagen renderizada a partir del contenido real del búfer de consola durante la ejecución.*
 
